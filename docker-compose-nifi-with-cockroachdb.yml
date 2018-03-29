@@ -1,0 +1,36 @@
+version: '3'
+services:
+  roach1:
+    hostname: roach1
+    image: cockroachdb/cockroach
+    container_name: roach1
+    ports:
+      - 26257:26257
+      - 8880:8080
+    command: start --insecure
+  roach2:
+    hostname: roach2
+    image: cockroachdb/cockroach
+    container_name: roach2
+    links:
+      - roach1
+    command: start --insecure --join=roach1
+  roach3:
+    hostname: roach3
+    image: cockroachdb/cockroach
+    container_name: roach3
+    links:
+      - roach1
+    command: start --insecure --join=roach1
+  nifi:
+    hostname: nifi
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - 8080:8080
+    links:
+      - roach1
+      - roach2
+      - roach3
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
