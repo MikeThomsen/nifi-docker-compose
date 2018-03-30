@@ -1,0 +1,21 @@
+version: "3"
+services:
+  sentinel:
+    image: redis-sentinel-all-in-one
+    environment:
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER=5000
+    ports:
+      - 26379:26379
+      - 6479:6479
+      - 6579:6579
+  nifi:
+    hostname: nifi
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - 8080:8080
+    links:
+      - sentinel
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
