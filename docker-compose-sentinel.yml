@@ -1,7 +1,7 @@
 version: "3"
 services:
   sentinel:
-    image: redis-sentinel-all-in-one
+    image: mikerthomsen/redis-sentinel-all-in-one
     environment:
       - SENTINEL_DOWN_AFTER=5000
       - SENTINEL_FAILOVER=5000
