@@ -32,5 +32,16 @@ services:
       - roach1
       - roach2
       - roach3
+      - nifi2
     volumes:
       - /tmp/nifi:/opt/nifi_in
+  nifi2:
+    hostname: nifi2
+    container_name: nifi2
+    image: "apache/nifi:latest"
+    environment:
+      - NIFI_WEB_HTTP_HOST=nifi2
+      - NIFI_WEB_HTTP_PORT=9999
+      - NIFI_REMOTE_INPUT_HOST=nifi2
+    ports:
+      - 9999:9999

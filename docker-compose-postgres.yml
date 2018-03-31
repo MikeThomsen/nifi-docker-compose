@@ -1,14 +1,15 @@
-version: "3"
+version: "3.1"
 services:
-  sentinel:
-    image: redis-sentinel-all-in-one
+  postgres:
+    image: postgres
+    restart: always
     environment:
-      - SENTINEL_DOWN_AFTER=5000
-      - SENTINEL_FAILOVER=5000
+      POSTGRES_PASSWORD: example
+  adminer:
+    image: adminer
+    restart: always
     ports:
-      - 26379:26379
-      - 6479:6479
-      - 6579:6579
+      - 8888:8080
   nifi:
     hostname: nifi
     image: apache/nifi:latest
@@ -16,7 +17,7 @@ services:
     ports:
       - 8080:8080
     links:
-      - sentinel
+      - postgres
       - nifi2
     volumes:
       - /tmp/nifi:/opt/nifi_in
