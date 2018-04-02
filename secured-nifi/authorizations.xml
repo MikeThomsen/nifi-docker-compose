@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<authorizations>
+    <policies>
+        <policy identifier="f99bccd1-a30e-3e4a-98a2-dbc708edc67f" resource="/flow" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="b8775bd4-704a-34c6-987b-84f2daf7a515" resource="/restricted-components" action="W">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="627410be-1717-35b4-a06f-e9362b89e0b7" resource="/tenants" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="15e4e0bd-cb28-34fd-8587-f8d15162cba5" resource="/tenants" action="W">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="ff96062a-fa99-36dc-9942-0f6442ae7212" resource="/policies" action="R">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="ad99ea98-3af6-3561-ae27-5bf09e1d969d" resource="/policies" action="W">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="2e1015cb-0fed-3005-8e0d-722311f21a03" resource="/controller" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="c6322e6c-4cc1-3bcc-91b3-2ed2111674cf" resource="/controller" action="W">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="866e1bcd-0162-1000-4f77-4c4e90237e71" resource="/provenance" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="866e71ea-0162-1000-e5de-a5bd42144b0f" resource="/site-to-site" action="R">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="866e9f7e-0162-1000-38f0-0d9745e7477e" resource="/system" action="R">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="866ecef0-0162-1000-0eb2-9f39c6d062e7" resource="/proxy" action="W">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="866ef2f9-0162-1000-d279-fd7b2df1c0f2" resource="/counters" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="866efbf2-0162-1000-d492-4a1ac1168e39" resource="/counters" action="W">
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="866f80f7-0162-1000-7e80-90028ea4a698" resource="/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="866fadd7-0162-1000-ee25-0fce92ab9631" resource="/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="W">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="867015d0-0162-1000-8854-f5d5614a7566" resource="/data/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+            <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb"/>
+        </policy>
+        <policy identifier="86704d42-0162-1000-9d4f-4174057d0a6a" resource="/data/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="W">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="86708cc4-0162-1000-a094-b02750bd57c7" resource="/policies/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="R">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+        <policy identifier="8670b8c2-0162-1000-09da-8a46e963fd42" resource="/policies/process-groups/866b69ad-0162-1000-d61b-a58b22cc5afd" action="W">
+            <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb"/>
+            <user identifier="65a55081-ba0a-3550-983e-3123c2d64669"/>
+        </policy>
+    </policies>
+</authorizations>

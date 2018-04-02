@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tenants>
+    <groups/>
+    <users>
+        <user identifier="65a55081-ba0a-3550-983e-3123c2d64669" identity="CN=initialAdmin, OU=NiFi"/>
+        <user identifier="866f5ec4-0162-1000-f929-2b12a003afdb" identity="admin"/>
+        <user identifier="866f6a25-0162-1000-433c-01e9c0b68ecb" identity="test"/>
+    </users>
+</tenants>
