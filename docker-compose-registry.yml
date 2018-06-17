@@ -81,7 +81,7 @@ services:
     ports:
       - 18443:18443
     environment:
-      - AUTH=ldap
+      - AUTH=tls
       - KEYSTORE_PATH=/opt/registry.nifi/keystore.jks
       - KEYSTORE_TYPE=JKS
       - KEYSTORE_PASSWORD=RExJ//TSENRt+ecbsCswDYqsRM1ITdk/NAKKQB7OyCk
@@ -96,4 +96,5 @@ services:
       - LDAP_USER_SEARCH_FILTER=uid={0}
       - LDAP_IDENTITY_STRATEGY=USE_USERNAME
       - LDAP_URL=ldap://ldap:10389
+
 
