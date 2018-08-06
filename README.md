@@ -36,6 +36,75 @@ rs.initiate(
 );
 ```
 
+## MongoDB Sharded Collection with SSL
+
+Docker Compose configuration file: `docker-compose-mongo-ssl-shard.yml`
+
+Bring up the Docker Compose file and wait until all containers are running (could take up to 2 minutes).
+
+Connect to the MongoDB configuration server using this command:
+
+`docker exec -it mongocfg mongo --ssl --sslPEMKeyFile /opt/mongo/mongo_user/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem mongocfg:27019`
+
+Once the shell is up, run this configuration:
+
+```
+rs.initiate(
+  {
+    _id: "myrs",
+    configsvr: true,
+    members: [
+      { _id : 0, host : "mongocfg:27019" }
+    ]
+  }
+);
+```
+
+Now, connect to mongo1 with this command:
+
+`docker exec -it mongo1 mongo --ssl --sslPEMKeyFile /opt/mongo/mongo_user/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem mongo1:27018`
+
+Run this configuration:
+
+```
+rs.initiate(
+  {
+    _id : "myrs_int",
+    members: [
+      { _id : 0, host : "mongo1:27018" },
+      { _id : 1, host : "mongo2:27018" }
+    ]
+  }
+);
+```
+
+At this point, both replica sets should be updated. Connect to the mongos service using this command:
+
+`docker exec -it mongos mongo --ssl --sslPEMKeyFile /opt/mongo/mongo_user/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem mongos:27017`
+
+Run these commands to make `mongos` aware of the nodes in the replicaset:
+
+```
+sh.addShard("myrs_int/mongo1:27018")
+sh.addShard("myrs_int/mongo2:27018")
+```
+
+Now, set up a test database like this:
+
+```
+sh.enableClustering("mystuff")
+sh.shardCollection("mystuff.test", { msg: 1 });
+```
+
+You should now be able to insert a document like this into `mystuff.test`:
+
+```
+use mystuff
+
+db.test.insert({ msg: "Hello, world" });
+db.test.insert({ msg: "Buongiorno, mondo!"});
+```
+
 ## License
 
 Some of the Docker Compose configurations are partly based on samples I found around the web. I don't assert any restrictions on the use of any of these Docker Compose configurations.
