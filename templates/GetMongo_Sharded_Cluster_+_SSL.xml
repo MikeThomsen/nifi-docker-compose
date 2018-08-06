@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<template encoding-version="1.2">
+    <description></description>
+    <groupId>0fecc5bb-0165-1000-d1e1-02837356b07a</groupId>
+    <name>GetMongo Sharded Cluster + SSL</name>
+    <snippet>
+        <processGroups>
+            <id>7f6f659d-5991-3284-0000-000000000000</id>
+            <parentGroupId>e445d04c-e570-3d37-0000-000000000000</parentGroupId>
+            <position>
+                <x>0.0</x>
+                <y>0.0</y>
+            </position>
+            <versionedComponentId>7f6f659d-5991-3284-b2de-039acaa126d5</versionedComponentId>
+            <comments></comments>
+            <contents>
+                <connections>
+                    <id>e9a086bd-e390-3db4-0000-000000000000</id>
+                    <parentGroupId>7f6f659d-5991-3284-0000-000000000000</parentGroupId>
+                    <versionedComponentId>e9a086bd-e390-3db4-b35d-600de805d8c8</versionedComponentId>
+                    <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+                    <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+                    <destination>
+                        <groupId>7f6f659d-5991-3284-0000-000000000000</groupId>
+                        <id>72b8f53a-a7c5-33eb-0000-000000000000</id>
+                        <type>PROCESSOR</type>
+                        <versionedComponentId>72b8f53a-a7c5-33eb-a8d7-eab86861a750</versionedComponentId>
+                    </destination>
+                    <flowFileExpiration>0 sec</flowFileExpiration>
+                    <labelIndex>1</labelIndex>
+                    <name></name>
+                    <selectedRelationships>success</selectedRelationships>
+                    <source>
+                        <groupId>7f6f659d-5991-3284-0000-000000000000</groupId>
+                        <id>bb046a74-b1d2-3d5a-0000-000000000000</id>
+                        <type>PROCESSOR</type>
+                        <versionedComponentId>bb046a74-b1d2-3d5a-b535-0a411d9a184d</versionedComponentId>
+                    </source>
+                    <zIndex>0</zIndex>
+                </connections>
+                <controllerServices>
+                    <id>7c9bc005-892c-3fd4-0000-000000000000</id>
+                    <parentGroupId>7f6f659d-5991-3284-0000-000000000000</parentGroupId>
+                    <versionedComponentId>7c9bc005-892c-3fd4-8f0f-57095abd7bcb</versionedComponentId>
+                    <bundle>
+                        <artifact>nifi-ssl-context-service-nar</artifact>
+                        <group>org.apache.nifi</group>
+                        <version>1.7.1</version>
+                    </bundle>
+                    <comments></comments>
+                    <descriptors>
+                        <entry>
+                            <key>Keystore Filename</key>
+                            <value>
+<name>Keystore Filename</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>Keystore Password</key>
+                            <value>
+<name>Keystore Password</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>key-password</key>
+                            <value>
+<name>key-password</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>Keystore Type</key>
+                            <value>
+<name>Keystore Type</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>Truststore Filename</key>
+                            <value>
+<name>Truststore Filename</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>Truststore Password</key>
+                            <value>
+<name>Truststore Password</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>Truststore Type</key>
+                            <value>
+<name>Truststore Type</name>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>SSL Protocol</key>
+                            <value>
+<name>SSL Protocol</name>
+                            </value>
+                        </entry>
+                    </descriptors>
+                    <name>StandardRestrictedSSLContextService</name>
+                    <persistsState>false</persistsState>
+                    <properties>
+                        <entry>
+                            <key>Keystore Filename</key>
+                            <value>/opt/mongo/mongo_user/mongo_user.p12</value>
+                        </entry>
+                        <entry>
+                            <key>Keystore Password</key>
+                        </entry>
+                        <entry>
+                            <key>key-password</key>
+                        </entry>
+                        <entry>
+                            <key>Keystore Type</key>
+                            <value>PKCS12</value>
+                        </entry>
+                        <entry>
+                            <key>Truststore Filename</key>
+                            <value>/opt/mongo/mongos/truststore.jks</value>
+                        </entry>
+                        <entry>
+                            <key>Truststore Password</key>
+                        </entry>
+                        <entry>
+                            <key>Truststore Type</key>
+                            <value>JKS</value>
+                        </entry>
+                        <entry>
+                            <key>SSL Protocol</key>
+                            <value>TLS</value>
+                        </entry>
+                    </properties>
+                    <state>ENABLED</state>
+                    <type>org.apache.nifi.ssl.StandardRestrictedSSLContextService</type>
+                </controllerServices>
+                <processors>
+                    <id>72b8f53a-a7c5-33eb-0000-000000000000</id>
+                    <parentGroupId>7f6f659d-5991-3284-0000-000000000000</parentGroupId>
+                    <position>
+                        <x>922.5</x>
+                        <y>309.5</y>
+                    </position>
+                    <versionedComponentId>72b8f53a-a7c5-33eb-a8d7-eab86861a750</versionedComponentId>
+                    <bundle>
+                        <artifact>nifi-standard-nar</artifact>
+                        <group>org.apache.nifi</group>
+                        <version>1.7.1</version>
+                    </bundle>
+                    <config>
+                        <bulletinLevel>WARN</bulletinLevel>
+                        <comments></comments>
+                        <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                        <descriptors>
+                            <entry>
+<key>Log Level</key>
+<value>
+    <name>Log Level</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Log Payload</key>
+<value>
+    <name>Log Payload</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Attributes to Log</key>
+<value>
+    <name>Attributes to Log</name>
+</value>
+                            </entry>
+                            <entry>
+<key>attributes-to-log-regex</key>
+<value>
+    <name>attributes-to-log-regex</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Attributes to Ignore</key>
+<value>
+    <name>Attributes to Ignore</name>
+</value>
+                            </entry>
+                            <entry>
+<key>attributes-to-ignore-regex</key>
+<value>
+    <name>attributes-to-ignore-regex</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Log prefix</key>
+<value>
+    <name>Log prefix</name>
+</value>
+                            </entry>
+                            <entry>
+<key>character-set</key>
+<value>
+    <name>character-set</name>
+</value>
+                            </entry>
+                        </descriptors>
+                        <executionNode>ALL</executionNode>
+                        <lossTolerant>false</lossTolerant>
+                        <penaltyDuration>30 sec</penaltyDuration>
+                        <properties>
+                            <entry>
+<key>Log Level</key>
+<value>info</value>
+                            </entry>
+                            <entry>
+<key>Log Payload</key>
+<value>false</value>
+                            </entry>
+                            <entry>
+<key>Attributes to Log</key>
+                            </entry>
+                            <entry>
+<key>attributes-to-log-regex</key>
+<value>.*</value>
+                            </entry>
+                            <entry>
+<key>Attributes to Ignore</key>
+                            </entry>
+                            <entry>
+<key>attributes-to-ignore-regex</key>
+                            </entry>
+                            <entry>
+<key>Log prefix</key>
+                            </entry>
+                            <entry>
+<key>character-set</key>
+<value>UTF-8</value>
+                            </entry>
+                        </properties>
+                        <runDurationMillis>0</runDurationMillis>
+                        <schedulingPeriod>0 sec</schedulingPeriod>
+                        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                        <yieldDuration>1 sec</yieldDuration>
+                    </config>
+                    <executionNodeRestricted>false</executionNodeRestricted>
+                    <name>LogAttribute</name>
+                    <relationships>
+                        <autoTerminate>true</autoTerminate>
+                        <name>success</name>
+                    </relationships>
+                    <state>STOPPED</state>
+                    <style/>
+                    <type>org.apache.nifi.processors.standard.LogAttribute</type>
+                </processors>
+                <processors>
+                    <id>bb046a74-b1d2-3d5a-0000-000000000000</id>
+                    <parentGroupId>7f6f659d-5991-3284-0000-000000000000</parentGroupId>
+                    <position>
+                        <x>225.5</x>
+                        <y>-16.5</y>
+                    </position>
+                    <versionedComponentId>bb046a74-b1d2-3d5a-b535-0a411d9a184d</versionedComponentId>
+                    <bundle>
+                        <artifact>nifi-mongodb-nar</artifact>
+                        <group>org.apache.nifi</group>
+                        <version>1.7.1</version>
+                    </bundle>
+                    <config>
+                        <bulletinLevel>WARN</bulletinLevel>
+                        <comments></comments>
+                        <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                        <descriptors>
+                            <entry>
+<key>Mongo URI</key>
+<value>
+    <name>Mongo URI</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Mongo Database Name</key>
+<value>
+    <name>Mongo Database Name</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Mongo Collection Name</key>
+<value>
+    <name>Mongo Collection Name</name>
+</value>
+                            </entry>
+                            <entry>
+<key>ssl-context-service</key>
+<value>
+    <identifiesControllerService>org.apache.nifi.ssl.SSLContextService</identifiesControllerService>
+    <name>ssl-context-service</name>
+</value>
+                            </entry>
+                            <entry>
+<key>ssl-client-auth</key>
+<value>
+    <name>ssl-client-auth</name>
+</value>
+                            </entry>
+                            <entry>
+<key>json-type</key>
+<value>
+    <name>json-type</name>
+</value>
+                            </entry>
+                            <entry>
+<key>use-pretty-printing</key>
+<value>
+    <name>use-pretty-printing</name>
+</value>
+                            </entry>
+                            <entry>
+<key>mongo-charset</key>
+<value>
+    <name>mongo-charset</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Query</key>
+<value>
+    <name>Query</name>
+</value>
+                            </entry>
+                            <entry>
+<key>mongo-query-attribute</key>
+<value>
+    <name>mongo-query-attribute</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Projection</key>
+<value>
+    <name>Projection</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Sort</key>
+<value>
+    <name>Sort</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Limit</key>
+<value>
+    <name>Limit</name>
+</value>
+                            </entry>
+                            <entry>
+<key>Batch Size</key>
+<value>
+    <name>Batch Size</name>
+</value>
+                            </entry>
+                            <entry>
+<key>results-per-flowfile</key>
+<value>
+    <name>results-per-flowfile</name>
+</value>
+                            </entry>
+                        </descriptors>
+                        <executionNode>ALL</executionNode>
+                        <lossTolerant>false</lossTolerant>
+                        <penaltyDuration>30 sec</penaltyDuration>
+                        <properties>
+                            <entry>
+<key>Mongo URI</key>
+<value>mongodb://mongos:27017</value>
+                            </entry>
+                            <entry>
+<key>Mongo Database Name</key>
+<value>mystuff</value>
+                            </entry>
+                            <entry>
+<key>Mongo Collection Name</key>
+<value>events</value>
+                            </entry>
+                            <entry>
+<key>ssl-context-service</key>
+<value>7c9bc005-892c-3fd4-0000-000000000000</value>
+                            </entry>
+                            <entry>
+<key>ssl-client-auth</key>
+<value>REQUIRED</value>
+                            </entry>
+                            <entry>
+<key>json-type</key>
+<value>Extended</value>
+                            </entry>
+                            <entry>
+<key>use-pretty-printing</key>
+<value>true</value>
+                            </entry>
+                            <entry>
+<key>mongo-charset</key>
+<value>UTF-8</value>
+                            </entry>
+                            <entry>
+<key>Query</key>
+                            </entry>
+                            <entry>
+<key>mongo-query-attribute</key>
+                            </entry>
+                            <entry>
+<key>Projection</key>
+                            </entry>
+                            <entry>
+<key>Sort</key>
+                            </entry>
+                            <entry>
+<key>Limit</key>
+                            </entry>
+                            <entry>
+<key>Batch Size</key>
+                            </entry>
+                            <entry>
+<key>results-per-flowfile</key>
+                            </entry>
+                        </properties>
+                        <runDurationMillis>0</runDurationMillis>
+                        <schedulingPeriod>15 sec</schedulingPeriod>
+                        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                        <yieldDuration>1 sec</yieldDuration>
+                    </config>
+                    <executionNodeRestricted>false</executionNodeRestricted>
+                    <name>GetMongo</name>
+                    <relationships>
+                        <autoTerminate>true</autoTerminate>
+                        <name>failure</name>
+                    </relationships>
+                    <relationships>
+                        <autoTerminate>true</autoTerminate>
+                        <name>original</name>
+                    </relationships>
+                    <relationships>
+                        <autoTerminate>false</autoTerminate>
+                        <name>success</name>
+                    </relationships>
+                    <state>STOPPED</state>
+                    <style/>
+                    <type>org.apache.nifi.processors.mongodb.GetMongo</type>
+                </processors>
+            </contents>
+            <name>GetMongo SSL + Sharded Collection</name>
+            <variables/>
+        </processGroups>
+    </snippet>
+    <timestamp>08/06/2018 16:25:46 UTC</timestamp>
+</template>

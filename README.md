@@ -15,6 +15,11 @@ Each of these provides two NiFi instances, one of which is meant to serve as a s
 2. Add `security_output/CN=initialAdmin,OU=NiFi.p12` as a user certificate in your browser, using the password in the `security_output/CN=initialAdmin,OU=NiFi.password` file.
 3. Add a mapping for `127.0.0.1 demo.nifi` to `/etc/hosts` (`C:\Windows\system32\drivers\etc]hosts` on Windows).
 
+## Mongo Shared Configuration for SSL
+
+* Key Store Password: `YhAyfZLZoEiUBvxm3Y3OSa1xdNkpxhRVBQ1nG7ne/NU`
+* Trust Store Password: `5/YbYUOqHvn3CcJm2mgx1LokLEFvcqqgQwTi4yN5k+I`
+
 ## Mongo ReplicaSet w/ SSL
 
 To set up this demo, do the following:
