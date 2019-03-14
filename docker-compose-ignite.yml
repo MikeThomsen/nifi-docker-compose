@@ -1,0 +1,17 @@
+version: "3.0"
+services:
+  nifi:
+    image: apache/nifi:1.9.0
+    container_name: ignite_nifi
+    ports:
+      - 8080:8080
+    links:
+      - ignite
+  ignite:
+    image: apacheignite/ignite:2.7.0
+    container_name: ignite
+    ports:
+      - 10800:10800
+      - 11211:11211
+      - 47100:47100
+      - 47500:47500
