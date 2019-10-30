@@ -38,7 +38,7 @@ services:
       - /opt/nifi_demo/mongo:/opt/nifi_demo
   nifi:
     hostname: demo.nifi
-    image: apache/nifi:latest
+    image: apache/nifi:${nifi.version}
     container_name: nifi
     environment:
       - AUTH=ldap
