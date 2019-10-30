@@ -10,7 +10,7 @@ services:
       - /opt/odp/ldap:/opt/odp/ldap:ro
   nifi:
     hostname: demo.nifi
-    image: apache/nifi:1.9.0-dockermaven
+    image: apache/nifi:${nifi.version}
     container_name: nifi
     environment:
       - AUTH=ldap

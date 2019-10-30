@@ -42,7 +42,7 @@ services:
       - NIFI_REGISTRY_WEB_HTTP_PORT=18080
   nifi:
     container_name: nifi
-    image: apache/nifi:1.7.1
+    image: apache/nifi:${nifi.version}
     hostname: demo.nifi
     ports:
       - 8080:8080
@@ -55,7 +55,7 @@ services:
       - ./nifi_mongo:/opt/mongo:ro
   nifi_s2s:
     container_name: nifi_s2s
-    image: apache/nifi:1.7.1
+    image: apache/nifi:${nifi.version}
     hostname: s3s.nifi
     ports: 
       - 9999:8080

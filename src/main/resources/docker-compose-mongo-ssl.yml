@@ -18,7 +18,7 @@ services:
       - ./nifi_mongo:/opt/mongo:ro
   nifi:
     container_name: nifi
-    image: apache/nifi:1.7.1
+    image: apache/nifi:${nifi.version}
     hostname: nifi
     ports:
       - 8080:8080

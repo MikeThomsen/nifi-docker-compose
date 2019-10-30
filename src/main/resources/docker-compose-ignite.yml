@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   nifi:
-    image: apache/nifi:1.9.0
+    image: apache/nifi:${nifi.version}
     container_name: ignite_nifi
     ports:
       - 8080:8080
