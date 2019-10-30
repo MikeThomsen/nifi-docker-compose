@@ -15,7 +15,7 @@
         <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
         </descriptors>
-        <finalName>standalone</finalName>
+        <finalName>nifi-docker-compose</finalName>
         </configuration>
         <executions>
           <execution>
