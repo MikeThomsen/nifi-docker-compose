@@ -10,7 +10,7 @@ services:
       - /opt/odp/ldap:/opt/odp/ldap:ro
   nifi:
     hostname: demo.nifi
-    image: apache/nifi:latest
+    image: apache/nifi:1.9.0-dockermaven
     container_name: nifi
     environment:
       - AUTH=ldap
@@ -42,7 +42,7 @@ services:
   prov.nifi:
     hostname: prov.nifi
     container_name: prov.nifi
-    image: "apache/nifi:latest"
+    image: "apache/nifi:1.9.0-dockermaven"
     environment:
       - NIFI_WEB_HTTP_HOST=prov.nifi
       - NIFI_WEB_HTTP_PORT=9999
