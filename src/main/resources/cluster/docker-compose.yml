@@ -9,7 +9,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   node1.nifi:
-    image: apache/nifi:1.8.0-dockermaven
+    image: apache/nifi:${nifi.version}
     container_name: node1.nifi
     hostname: node1.nifi
     links:
@@ -25,7 +25,7 @@ services:
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
   node2.nifi:
-    image: apache/nifi:1.8.0-dockermaven
+    image: apache/nifi:${nifi.version}
     container_name: node2.nifi
     hostname: node2.nifi
     links:
@@ -42,7 +42,7 @@ services:
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
   node3.nifi:
-    image: apache/nifi:1.8.0-dockermaven
+    image: apache/nifi:${nifi.version}
     container_name: node3.nifi
     hostname: node3.nifi
     ports:
