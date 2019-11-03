@@ -11,6 +11,7 @@
 	<nifi.registry.version>0.5.0</nifi.registry.version>
         <elasticsearch.version>6.8.4</elasticsearch.version>
 	<ignite.version>2.7.6</ignite.version>
+	<janusgraph.version>0.4</janusgraph.version>
         <kibana.version>6.8.4</kibana.version>
 	<mongo.version>4.0</mongo.version>
 	<postgres.version>11</postgres.version>

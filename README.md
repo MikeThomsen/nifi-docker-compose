@@ -13,6 +13,7 @@ Each of these provides two NiFi instances, one of which is meant to serve as a s
 * docker-compose-mongo-ssl.yml - MongoDB with SSL and simple replication.
 * docker-compose-registry-secure.yml - A secure NiFi Registry example.
 * docker-compose-registry-simple.yml -A simple NiFi Registry example without security enabled.
+* docker-compose-janusgraph.yml - A configuration that connects NiFi 1.10.0 with JanusGraph. Requires a custom build of Apache NiFi 1.10.
 
 ## Local Setup
 

@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  janusgraph:
+    container_name: janusgraph
+    hostname: janusgraph
+    image: janusgraph/janusgraph:${janusgraph.version}
+    ports:
+      - 8182:8182
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    ports:
+      - 8080:8080
+    links:
+      - janusgraph
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
