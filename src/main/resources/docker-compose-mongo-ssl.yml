@@ -3,7 +3,7 @@ services:
   mongo1:
     container_name: mongo1
     hostname: mongo1
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongod --shardsvr --replSet myrs  --dbpath /tmp --bind_ip_all --port 27017 --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo1/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     links:
       - mongo2
@@ -12,7 +12,7 @@ services:
   mongo2:
     container_name: mongo2
     hostname: mongo2
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongod --shardsvr --replSet myrs  --dbpath /tmp --bind_ip_all --port 27017 --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo2/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro

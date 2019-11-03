@@ -3,14 +3,14 @@ services:
   mongocfg:
     container_name: mongocfg
     hostname: mongocfg
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongod --configsvr --replSet myrs --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongocfg/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
   mongo1:
     container_name: mongo1
     hostname: mongo1
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongod --shardsvr --replSet myrs_int  --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo1/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     links:
       - mongo2
@@ -19,14 +19,14 @@ services:
   mongo2:
     container_name: mongo2
     hostname: mongo2
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongod --shardsvr --replSet myrs_int  --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo2/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
   mongos:
     container_name: mongos
     hostname: mongos
-    image: mongo:latest
+    image: mongo:${mongo.version}
     command: mongos --configdb myrs/mongocfg:27019 --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongos/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
