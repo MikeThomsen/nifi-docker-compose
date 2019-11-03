@@ -8,6 +8,11 @@ Each of these provides two NiFi instances, one of which is meant to serve as a s
 * docker-compose-pulsar-heron.yml - [Streaml.io sandbox](https://streaml.io/docs/getting-started) that provides Pulsar, Apache BookKeeper and Twitter Heron.
 * docker-compose-sentinel.yml - Redis Sentinel all-in-one (Redis sentinel, master and slave).
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
+* docker-compose-ignite.yml - Apache Ignite support.
+* docker-compose-mongo-ssl-shard.yml - MongoDB with SSL authentication and sharding.
+* docker-compose-mongo-ssl.yml - MongoDB with SSL and simple replication.
+* docker-compose-registry-secure.yml - A secure NiFi Registry example.
+* docker-compose-registry-simple.yml -A simple NiFi Registry example without security enabled.
 
 ## Local Setup
 
