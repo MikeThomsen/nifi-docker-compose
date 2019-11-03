@@ -42,7 +42,7 @@ services:
   prov.nifi:
     hostname: prov.nifi
     container_name: prov.nifi
-    image: "apache/nifi:1.9.0-dockermaven"
+    image: apache/nifi:${nifi.version}
     environment:
       - NIFI_WEB_HTTP_HOST=prov.nifi
       - NIFI_WEB_HTTP_PORT=9999
@@ -72,7 +72,7 @@ services:
       - ./for_registry/prov.nifi/:/opt/prov.nifi:ro
   registry.nifi:
     hostname: registry.nifi
-    image: apache/nifi-registry:latest
+    image: apache/nifi-registry:${nifi.registry.version}
     container_name: registry.nifi
     links:
       - ldap
