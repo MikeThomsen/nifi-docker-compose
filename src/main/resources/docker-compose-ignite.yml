@@ -8,7 +8,7 @@ services:
     links:
       - ignite
   ignite:
-    image: apacheignite/ignite:2.7.0
+    image: apacheignite/ignite:${ignite.version}
     container_name: ignite
     ports:
       - 10800:10800

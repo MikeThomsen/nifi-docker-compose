@@ -9,6 +9,7 @@
     <properties>
         <nifi.version>1.9.2</nifi.version>
         <elasticsearch.version>6.8.4</elasticsearch.version>
+	<ignite.version>2.7.6</ignite.version>
         <kibana.version>6.8.4</kibana.version>
 	<mongo.version>4.0</mongo.version>
 	<postgres.version>11</postgres.version>
