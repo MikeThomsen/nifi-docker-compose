@@ -10,6 +10,7 @@
         <nifi.version>1.9.2</nifi.version>
         <elasticsearch.version>6.8.4</elasticsearch.version>
         <kibana.version>6.8.4</kibana.version>
+	<x-pack.enable>false</x-pack.enable>
     </properties>
     <build>
 
