@@ -3,7 +3,7 @@
 Each of these provides two NiFi instances, one of which is meant to serve as a secondary instance to facilitate SiteToSite work.
 
 * docker-compose-nifi-with-cockroachdb.yml - 3 node CockroachDB cluster
-* docker-compose-es-mongo.yml - ElasticSearch and MongoDB.
+* docker-compose-elasticsearch.yml - ElasticSearch.
 * docker-compose-postgres.yml - PostgreSQL.
 * docker-compose-pulsar-heron.yml - [Streaml.io sandbox](https://streaml.io/docs/getting-started) that provides Pulsar, Apache BookKeeper and Twitter Heron.
 * docker-compose-sentinel.yml - Redis Sentinel all-in-one (Redis sentinel, master and slave).

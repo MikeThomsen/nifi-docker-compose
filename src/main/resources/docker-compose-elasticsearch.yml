@@ -1,0 +1,38 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${elasticsearch.version}
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      - xpack.security.enabled=true
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${kibana.version}
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_URL="http://elasticsearch:9200"
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      - xpack.security.enabled=true
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch
+  nifi:
+    hostname: demo.nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    ports:
+      - 8080:8080
+      - 443:8443
+    links:
+      - elasticsearch
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./security_output/demo.nifi:/opt/demo.nifi
