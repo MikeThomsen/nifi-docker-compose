@@ -14,7 +14,6 @@ services:
     hostname: node1.nifi
     links:
       - zookeeper
-      - mongo_test
     ports:
       - 8080:8080
     environment:
@@ -31,7 +30,6 @@ services:
     links:
       - zookeeper
       - node1.nifi
-      - mongo_test
     ports:
       - 8888:8080
     environment:
@@ -51,7 +49,6 @@ services:
       - zookeeper
       - node1.nifi
       - node2.nifi
-      - mongo_test
     environment:
       - NIFI_WEB_HTTP_HOST=node3.nifi
       - NIFI_WEB_HTTP_PORT=8080
@@ -59,7 +56,3 @@ services:
       - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
-  mongo_test:
-    image: mongo:latest
-    container_name: mongo_test
-
