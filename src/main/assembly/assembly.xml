@@ -14,5 +14,33 @@
                 <include>**</include>
             </includes>
         </fileSet>
+	<fileSet>
+            <directory>${basedir}/src/main/resources/nifi_mongo</directory>
+            <outputDirectory>./nifi_mongo</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/for_registry</directory>
+            <outputDirectory>./for_registry</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/security_output</directory>
+            <outputDirectory>./security_output</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/templates</directory>
+            <outputDirectory>./templates</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
