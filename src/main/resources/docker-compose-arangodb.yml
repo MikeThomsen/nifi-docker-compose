@@ -1,0 +1,16 @@
+version: "3.0"
+services:
+  nifi:
+    image: apache/nifi:${nifi.version}
+    container_name: arango_nifi
+    ports:
+      - 8080:8080
+    links:
+      - arango
+  arango:
+    image: arangodb:3.5
+    container_name: arangodb
+    environment:
+      - ARANGO_ROOT_PASSWORD=testing1234
+    ports:
+      - 8529:8529
