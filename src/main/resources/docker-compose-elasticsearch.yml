@@ -34,5 +34,6 @@ services:
     links:
       - elasticsearch
     volumes:
+      - ./extensions:/opt/nifi/nifi-current/extensions
       - /tmp/nifi:/opt/nifi_in
       - ./security_output/demo.nifi:/opt/demo.nifi

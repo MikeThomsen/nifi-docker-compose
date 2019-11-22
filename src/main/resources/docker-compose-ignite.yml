@@ -7,6 +7,8 @@ services:
       - 8080:8080
     links:
       - ignite
+    volumes:
+      - ./extensions:/opt/nifi/nifi-current/extensions
   ignite:
     image: apacheignite/ignite:${ignite.version}
     container_name: ignite

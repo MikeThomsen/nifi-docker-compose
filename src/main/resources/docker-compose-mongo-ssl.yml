@@ -9,6 +9,7 @@ services:
       - mongo2
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
+      - ./extensions:/opt/nifi/nifi-current/extensions
   mongo2:
     container_name: mongo2
     hostname: mongo2
@@ -27,3 +28,4 @@ services:
       - mongo2
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
+      - ./extensions:/opt/nifi/nifi-current/extensions

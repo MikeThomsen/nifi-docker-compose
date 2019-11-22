@@ -53,6 +53,7 @@ services:
       - mongocfg
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
+     - ./extensions:/opt/nifi/nifi-current/extensions
   nifi_s2s:
     container_name: nifi_s2s
     image: apache/nifi:${nifi.version}
@@ -61,3 +62,4 @@ services:
       - 9999:8080
     links:
       - nifi
+

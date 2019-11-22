@@ -23,6 +23,8 @@ services:
       - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
+    volumes:
+      - ./extensions:/opt/nifi/nifi-current/extensions
   node2.nifi:
     image: apache/nifi:${nifi.version}
     container_name: node2.nifi
@@ -39,6 +41,8 @@ services:
       - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
+    volumes:
+      - ./extensions:/opt/nifi/nifi-current/extensions
   node3.nifi:
     image: apache/nifi:${nifi.version}
     container_name: node3.nifi
@@ -56,3 +60,5 @@ services:
       - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
       - NIFI_ELECTION_MAX_WAIT=1 min
+    volumes:
+      - ./extensions:/opt/nifi/nifi-current/extensions

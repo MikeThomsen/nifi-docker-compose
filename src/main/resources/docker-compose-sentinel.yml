@@ -20,6 +20,7 @@ services:
       - nifi2
     volumes:
       - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/extensions
   nifi2:
     hostname: nifi2
     container_name: nifi2

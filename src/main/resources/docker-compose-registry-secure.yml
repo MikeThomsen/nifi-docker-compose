@@ -39,6 +39,7 @@ services:
     volumes:
       - /tmp/nifi:/opt/nifi_in
       - ./for_registry/demo.nifi:/opt/demo.nifi:ro
+      - ./extensions:/opt/nifi/nifi-current/extensions
   prov.nifi:
     hostname: prov.nifi
     container_name: prov.nifi

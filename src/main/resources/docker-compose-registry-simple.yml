@@ -18,6 +18,7 @@ services:
     container_name: registry.nifi
     volumes:
       - ./for_registry/registry.nifi/:/opt/registry.nifi:ro
+      - ./extensions:/opt/nifi/nifi-current/extensions
     ports:
       - 18080:18080
 

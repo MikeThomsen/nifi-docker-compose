@@ -16,3 +16,4 @@ services:
       - janusgraph
     volumes:
       - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/extensions
