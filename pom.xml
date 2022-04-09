@@ -7,15 +7,15 @@
     <packaging>pom</packaging>
     <name>NiFi Docker Compose Samplest</name>
     <properties>
-        <nifi.version>1.10.0</nifi.version>
-	<nifi.registry.version>0.5.0</nifi.registry.version>
+        <nifi.version>1.15.3</nifi.version>
+        <nifi.registry.version>1.15.3</nifi.registry.version>
         <elasticsearch.version>6.8.4</elasticsearch.version>
-	<ignite.version>2.7.6</ignite.version>
-	<janusgraph.version>0.4</janusgraph.version>
+        <ignite.version>2.7.6</ignite.version>
+        <janusgraph.version>0.4</janusgraph.version>
         <kibana.version>6.8.4</kibana.version>
-	<mongo.version>4.0</mongo.version>
-	<postgres.version>11</postgres.version>
-	<x-pack.enable>false</x-pack.enable>
+        <mongo.version>4.0</mongo.version>
+        <postgres.version>11</postgres.version>
+        <x-pack.enable>false</x-pack.enable>
     </properties>
     <build>
 
@@ -23,9 +23,9 @@
             <resource>
                 <directory>src/main/resources/</directory>
                 <filtering>true</filtering>
-		<includes>
-			<include>*.yml</include>
-		</includes>
+                <includes>
+                    <include>*.yml</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
