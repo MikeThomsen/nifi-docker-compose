@@ -44,8 +44,11 @@ services:
     container_name: nifi
     image: apache/nifi:${nifi.version}
     hostname: demo.nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=root
     ports:
-      - 8080:8080
+      - 8443:8443
     links:
       - mongo1
       - mongo2
@@ -54,12 +57,5 @@ services:
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
      - ./extensions:/opt/nifi/nifi-current/extensions
-  nifi_s2s:
-    container_name: nifi_s2s
-    image: apache/nifi:${nifi.version}
-    hostname: s3s.nifi
-    ports: 
-      - 9999:8080
-    links:
-      - nifi
+
 

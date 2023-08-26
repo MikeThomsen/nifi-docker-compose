@@ -4,9 +4,11 @@ services:
     hostname: demo.nifi
     image: apache/nifi:${nifi.version}
     container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=root
     ports:
-      - 8080:8080
-      - 443:8443
+      - 8443:8443
     links:
       - registry.nifi
     volumes:

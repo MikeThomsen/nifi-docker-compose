@@ -4,7 +4,10 @@ services:
     image: apache/nifi:${nifi.version}
     container_name: arango_nifi
     ports:
-      - 8080:8080
+      - 8443:8443
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=root
     links:
       - arango
     volumes:

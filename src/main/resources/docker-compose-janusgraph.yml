@@ -11,7 +11,10 @@ services:
     image: apache/nifi:${nifi.version}
     container_name: nifi
     ports:
-      - 8080:8080
+      - 8443:8443
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=root
     links:
       - janusgraph
     volumes:
