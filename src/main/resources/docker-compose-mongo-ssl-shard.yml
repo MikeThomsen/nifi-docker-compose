@@ -1,18 +1,17 @@
-version: "3"
 services:
   mongocfg:
     container_name: mongocfg
     hostname: mongocfg
     image: mongo:${mongo.version}
-    command: mongod --configsvr --replSet myrs --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongocfg/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
+    command: mongod --configsvr --replSet myrs --dbpath /tmp --bind_ip_all --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongocfg/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
   mongo1:
     container_name: mongo1
     hostname: mongo1
     image: mongo:${mongo.version}
-    command: mongod --shardsvr --replSet myrs_int  --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo1/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
-    links:
+    command: mongod --shardsvr --replSet myrs_int --dbpath /tmp --bind_ip_all --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongo1/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
+    depends_on:
       - mongo2
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
@@ -20,42 +19,38 @@ services:
     container_name: mongo2
     hostname: mongo2
     image: mongo:${mongo.version}
-    command: mongod --shardsvr --replSet myrs_int  --dbpath /tmp --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo2/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
+    command: mongod --shardsvr --replSet myrs_int --dbpath /tmp --bind_ip_all --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongo2/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
   mongos:
     container_name: mongos
     hostname: mongos
     image: mongo:${mongo.version}
-    command: mongos --configdb myrs/mongocfg:27019 --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongos/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
+    command: mongos --configdb myrs/mongocfg:27019 --bind_ip_all --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongos/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
+    depends_on:
+      - mongocfg
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
-    links:
-      - mongocfg
   registry.nifi:
     container_name: registry
     hostname: registry.nifi
-    image: apache/nifi-registry:0.2.0
-    ports: 
+    image: apache/nifi-registry:${nifi.registry.version}
+    ports:
       - 18080:18080
-    environment:
-      - NIFI_REGISTRY_WEB_HTTP_PORT=18080
   nifi:
     container_name: nifi
     image: apache/nifi:${nifi.version}
     hostname: demo.nifi
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
     ports:
       - 8443:8443
-    links:
+    depends_on:
       - mongo1
       - mongo2
       - mongos
       - mongocfg
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
-     - ./extensions:/opt/nifi/nifi-current/extensions
-
-
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
