@@ -21,6 +21,7 @@
         <redis.version>8.8.3</redis.version>
         <solr.version>10.0.0</solr.version>
         <zookeeper.version>3.9.6</zookeeper.version>
+        <pulsar.version>5.0.0</pulsar.version>
         <x-pack.enable>false</x-pack.enable>
     </properties>
     <build>
