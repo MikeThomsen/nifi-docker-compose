@@ -1,26 +1,47 @@
-version: "3"
+# Redis Sentinel demo built from the official redis image: a master, one replica and one sentinel
+# monitoring the master under the name "mymaster".
 services:
+  redis-master:
+    image: redis:${redis.version}
+    container_name: redis-master
+    hostname: redis-master
+    ports:
+      - 6479:6379
+  redis-replica:
+    image: redis:${redis.version}
+    container_name: redis-replica
+    hostname: redis-replica
+    command: redis-server --replicaof redis-master 6379
+    depends_on:
+      - redis-master
+    ports:
+      - 6579:6379
   sentinel:
-    image: mikerthomsen/redis-sentinel-all-in-one
-    environment:
-      - SENTINEL_DOWN_AFTER=5000
-      - SENTINEL_FAILOVER=5000
+    image: redis:${redis.version}
+    container_name: sentinel
+    hostname: sentinel
+    command:
+      - sh
+      - -c
+      - |
+        printf 'port 26379\nsentinel resolve-hostnames yes\nsentinel announce-hostnames yes\nsentinel monitor mymaster redis-master 6379 1\nsentinel down-after-milliseconds mymaster 5000\nsentinel failover-timeout mymaster 5000\n' > /tmp/sentinel.conf
+        exec redis-sentinel /tmp/sentinel.conf
+    depends_on:
+      - redis-master
+      - redis-replica
     ports:
       - 26379:26379
-      - 6479:6479
-      - 6579:6579
   nifi:
     hostname: nifi
     image: apache/nifi:${nifi.version}
     container_name: nifi
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
     ports:
       - 8443:8443
-    links:
+    depends_on:
       - sentinel
     volumes:
       - /tmp/nifi:/opt/nifi_in
-      - ./extensions:/opt/nifi/nifi-current/extensions
-
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
