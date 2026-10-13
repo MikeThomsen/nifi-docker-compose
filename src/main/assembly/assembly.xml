@@ -14,12 +14,5 @@
                 <include>**</include>
             </includes>
         </fileSet>
-        <fileSet>
-            <directory>${basedir}/src/main/resources/security_output</directory>
-            <outputDirectory>./security_output</outputDirectory>
-            <includes>
-                <include>**</include>
-            </includes>
-        </fileSet>
     </fileSets>
 </assembly>

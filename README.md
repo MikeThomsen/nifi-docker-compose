@@ -15,5 +15,3 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 ## License
 
 Some of the Docker Compose configurations are partly based on samples I found around the web. I don't assert any restrictions on the use of any of these Docker Compose configurations.
-
-All `security_content` output is public domain.
