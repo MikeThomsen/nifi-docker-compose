@@ -7,7 +7,6 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so unless noted
 * docker-compose-nifi-with-cockroachdb.yml - 3 node CockroachDB cluster
 * docker-compose-elasticsearch.yml - ElasticSearch.
 * docker-compose-postgres.yml - PostgreSQL.
-* docker-compose-pulsar-heron.yml - Apache Pulsar standalone. **Needs manual review:** the Heron half of the original sandbox was dropped.
 * docker-compose-sentinel.yml - Redis master, replica and sentinel (master name `mymaster`).
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
 * docker-compose-ignite.yml - Apache Ignite support.
