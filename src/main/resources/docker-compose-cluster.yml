@@ -1,64 +1,82 @@
-version: "3"
+# Three node NiFi 2.x cluster. NiFi 2.x removed the embedded ZooKeeper and only offers ZooKeeper or
+# Kubernetes for leader election and cluster state, so a standalone ZooKeeper is still required here.
+# A one-shot "certs" service generates a single certificate shared by all nodes (as both keystore and
+# truststore) so the nodes trust each other. Log in at https://localhost:8443/nifi (or 8444 / 8445).
+x-nifi-node: &nifi-node
+  image: apache/nifi:${nifi.version}
+  environment: &nifi-node-env
+    - AUTH=tls
+    - KEYSTORE_PATH=/opt/certs/keystore.p12
+    - KEYSTORE_TYPE=PKCS12
+    - KEYSTORE_PASSWORD=clusterstorepass
+    - TRUSTSTORE_PATH=/opt/certs/truststore.p12
+    - TRUSTSTORE_TYPE=PKCS12
+    - TRUSTSTORE_PASSWORD=clusterstorepass
+    - INITIAL_ADMIN_IDENTITY=CN=nifi-cluster, OU=NiFi
+    - NODE_IDENTITY=CN=nifi-cluster, OU=NiFi
+    - NIFI_SECURITY_USER_LOGIN_IDENTITY_PROVIDER=single-user-provider
+    - NIFI_SECURITY_USER_AUTHORIZER=single-user-authorizer
+    - SINGLE_USER_CREDENTIALS_USERNAME=root
+    - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    - NIFI_SENSITIVE_PROPS_KEY=clustersensitivekey
+    - NIFI_WEB_PROXY_HOST=localhost:8443,localhost:8444,localhost:8445
+    - NIFI_CLUSTER_IS_NODE=true
+    - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
+    - NIFI_ZK_CONNECT_STRING=zookeeper:2181
+    - NIFI_ELECTION_MAX_WAIT=1 min
+    - NIFI_ELECTION_MAX_CANDIDATES=3
+  volumes:
+    - cluster-certs:/opt/certs:ro
+    - ./extensions:/opt/nifi/nifi-current/nar_extensions
+  depends_on:
+    certs:
+      condition: service_completed_successfully
+    zookeeper:
+      condition: service_started
 services:
-  zookeeper:
-    hostname: zookeeper
-    container_name: zookeeper
-    image: 'bitnami/zookeeper:latest'
-    ports:
-      - '2181:2181'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-  node1.nifi:
+  certs:
     image: apache/nifi:${nifi.version}
+    container_name: nifi-certs
+    user: "0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cd /opt/certs
+        rm -f keystore.p12 truststore.p12 nifi.crt
+        keytool -genkeypair -alias nifi -keyalg RSA -keysize 2048 -validity 3650 \
+          -dname "CN=nifi-cluster, OU=NiFi" \
+          -ext "san=dns:node1.nifi,dns:node2.nifi,dns:node3.nifi,dns:localhost" \
+          -ext "eku=serverAuth,clientAuth" \
+          -keystore keystore.p12 -storetype PKCS12 -storepass clusterstorepass -keypass clusterstorepass
+        keytool -exportcert -alias nifi -keystore keystore.p12 -storepass clusterstorepass -file nifi.crt
+        keytool -importcert -noprompt -alias nifi -file nifi.crt \
+          -keystore truststore.p12 -storetype PKCS12 -storepass clusterstorepass
+        chmod 644 keystore.p12 truststore.p12
+    volumes:
+      - cluster-certs:/opt/certs
+  zookeeper:
+    image: zookeeper:${zookeeper.version}
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - 2181:2181
+  node1.nifi:
+    <<: *nifi-node
     container_name: node1.nifi
     hostname: node1.nifi
-    links:
-      - zookeeper
     ports:
-      - 8080:8080
-    environment:
-      - NIFI_WEB_HTTP_HOST=node1.nifi
-      - NIFI_WEB_HTTP_PORT=8080
-      - NIFI_CLUSTER_IS_NODE=true
-      - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
-      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-      - NIFI_ELECTION_MAX_WAIT=1 min
-    volumes:
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - 8443:8443
   node2.nifi:
-    image: apache/nifi:${nifi.version}
+    <<: *nifi-node
     container_name: node2.nifi
     hostname: node2.nifi
-    links:
-      - zookeeper
-      - node1.nifi
     ports:
-      - 8888:8080
-    environment:
-      - NIFI_WEB_HTTP_HOST=node2.nifi
-      - NIFI_WEB_HTTP_PORT=8080
-      - NIFI_CLUSTER_IS_NODE=true
-      - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
-      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-      - NIFI_ELECTION_MAX_WAIT=1 min
-    volumes:
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - 8444:8443
   node3.nifi:
-    image: apache/nifi:${nifi.version}
+    <<: *nifi-node
     container_name: node3.nifi
     hostname: node3.nifi
     ports:
-      - 8999:8080
-    links:
-      - zookeeper
-      - node1.nifi
-      - node2.nifi
-    environment:
-      - NIFI_WEB_HTTP_HOST=node3.nifi
-      - NIFI_WEB_HTTP_PORT=8080
-      - NIFI_CLUSTER_IS_NODE=true
-      - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
-      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-      - NIFI_ELECTION_MAX_WAIT=1 min
-    volumes:
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - 8445:8443
+volumes:
+  cluster-certs:
