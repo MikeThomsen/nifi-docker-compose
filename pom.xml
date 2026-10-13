@@ -13,7 +13,8 @@
         <kibana.version>9.5.5</kibana.version>
         <ignite.version>2.18.0</ignite.version>
         <janusgraph.version>1.1.0</janusgraph.version>
-        <mongo.version>9.0.2</mongo.version>
+        <!-- 7.0.x is the newest line that starts on Linux kernels 6.19+ (SERVER-121912); 8.x and 9.x refuse to start there -->
+        <mongo.version>7.0.43</mongo.version>
         <postgres.version>18.6</postgres.version>
         <adminer.version>6.1.1</adminer.version>
         <arangodb.version>3.12.12</arangodb.version>

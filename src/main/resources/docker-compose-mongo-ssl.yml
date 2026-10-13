@@ -1,20 +1,18 @@
-version: "3"
 services:
   mongo1:
     container_name: mongo1
     hostname: mongo1
     image: mongo:${mongo.version}
-    command: mongod --shardsvr --replSet myrs  --dbpath /tmp --bind_ip_all --port 27017 --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo1/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
-    links:
+    command: mongod --shardsvr --replSet myrs --dbpath /tmp --bind_ip_all --port 27017 --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongo1/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
+    depends_on:
       - mongo2
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
-      - ./extensions:/opt/nifi/nifi-current/extensions
   mongo2:
     container_name: mongo2
     hostname: mongo2
     image: mongo:${mongo.version}
-    command: mongod --shardsvr --replSet myrs  --dbpath /tmp --bind_ip_all --port 27017 --sslMode requireSSL --sslPEMKeyFile /opt/mongo/mongo2/combined.pem --sslCAFile /opt/mongo/nifi-cert.pem
+    command: mongod --shardsvr --replSet myrs --dbpath /tmp --bind_ip_all --port 27017 --tlsMode requireTLS --tlsCertificateKeyFile /opt/mongo/mongo2/combined.pem --tlsCAFile /opt/mongo/nifi-cert.pem
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
   nifi:
@@ -23,12 +21,12 @@ services:
     hostname: nifi
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
     ports:
       - 8443:8443
-    links:
+    depends_on:
       - mongo1
       - mongo2
     volumes:
       - ./nifi_mongo:/opt/mongo:ro
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
