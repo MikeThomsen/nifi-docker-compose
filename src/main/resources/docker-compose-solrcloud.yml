@@ -1,36 +1,44 @@
-version: "3"
 services:
   zookeeper:
-    image: jplock/zookeeper
+    image: zookeeper:${zookeeper.version}
+    container_name: zookeeper
+    hostname: zookeeper
     ports:
-      - "2181:2181"
-      - "2888:2888"
-      - "3888:3888"
+      - 2181:2181
   solr1:
     hostname: solr1
-    image: solr:latest
+    container_name: solr1
+    image: solr:${solr.version}
+    environment:
+      - ZK_HOST=zookeeper:2181
     ports:
-      - "8983:8983"
-    links:
-      - "zookeeper:ZK"
-    command: "bash -c '/opt/solr/bin/solr start -f -z zookeeper:2181'"
+      - 8983:8983
+    depends_on:
+      - zookeeper
+    command: solr-foreground
   solr2:
     hostname: solr2
-    image: solr:latest
+    container_name: solr2
+    image: solr:${solr.version}
+    environment:
+      - ZK_HOST=zookeeper:2181
     ports:
-      - "8984:8983"
-    links:
-      - "zookeeper:ZK"
-    command: "bash -c '/opt/solr/bin/solr start -f -z zookeeper:2181'"
+      - 8984:8983
+    depends_on:
+      - zookeeper
+    command: solr-foreground
   nifi:
     hostname: nifi
     image: apache/nifi:${nifi.version}
     container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
     ports:
-      - 8080:8080
-    links:
+      - 8443:8443
+    depends_on:
       - solr1
       - solr2
     volumes:
       - /tmp/nifi:/opt/nifi_in
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions

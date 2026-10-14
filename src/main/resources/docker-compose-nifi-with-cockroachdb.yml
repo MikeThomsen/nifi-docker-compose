@@ -1,27 +1,31 @@
-version: '3'
 services:
   roach1:
     hostname: roach1
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:${cockroachdb.version}
     container_name: roach1
     ports:
       - 26257:26257
       - 8880:8080
-    command: start --insecure
+    command: start --insecure --join=roach1,roach2,roach3
   roach2:
     hostname: roach2
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:${cockroachdb.version}
     container_name: roach2
-    links:
-      - roach1
-    command: start --insecure --join=roach1
+    command: start --insecure --join=roach1,roach2,roach3
   roach3:
     hostname: roach3
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:${cockroachdb.version}
     container_name: roach3
-    links:
+    command: start --insecure --join=roach1,roach2,roach3
+  roach-init:
+    image: cockroachdb/cockroach:${cockroachdb.version}
+    container_name: roach-init
+    restart: on-failure
+    command: init --insecure --host=roach1
+    depends_on:
       - roach1
-    command: start --insecure --join=roach1
+      - roach2
+      - roach3
   nifi:
     hostname: nifi
     image: apache/nifi:${nifi.version}
@@ -30,11 +34,9 @@ services:
       - 8443:8443
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
-    links:
-      - roach1
-      - roach2
-      - roach3
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    depends_on:
+      - roach-init
     volumes:
       - /tmp/nifi:/opt/nifi_in
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions

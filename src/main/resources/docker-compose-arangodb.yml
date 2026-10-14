@@ -1,19 +1,19 @@
-version: "3.0"
 services:
   nifi:
     image: apache/nifi:${nifi.version}
     container_name: arango_nifi
+    hostname: nifi
     ports:
       - 8443:8443
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
-    links:
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    depends_on:
       - arango
     volumes:
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
   arango:
-    image: arangodb:3.5
+    image: arangodb:${arangodb.version}
     container_name: arangodb
     environment:
       - ARANGO_ROOT_PASSWORD=testing1234

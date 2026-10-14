@@ -1,12 +1,12 @@
-version: "3.1"
 services:
   postgres:
     image: postgres:${postgres.version}
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: example
   adminer:
-    image: adminer
+    image: adminer:${adminer.version}
     restart: always
     ports:
       - 8888:8080
@@ -18,9 +18,9 @@ services:
       - 8443:8443
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
-    links:
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    depends_on:
       - postgres
     volumes:
       - /tmp/nifi:/opt/nifi_in
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions

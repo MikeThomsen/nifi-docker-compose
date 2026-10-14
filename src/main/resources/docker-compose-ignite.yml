@@ -1,17 +1,17 @@
-version: "3.0"
 services:
   nifi:
     image: apache/nifi:${nifi.version}
     container_name: ignite_nifi
+    hostname: nifi
     ports:
       - 8443:8443
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
-      - SINGLE_USER_CREDENTIALS_PASSWORD=root
-    links:
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    depends_on:
       - ignite
     volumes:
-      - ./extensions:/opt/nifi/nifi-current/extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
   ignite:
     image: apacheignite/ignite:${ignite.version}
     container_name: ignite
