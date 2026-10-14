@@ -1,43 +1,49 @@
-# Three member MongoDB replica set (rs0) with Mongoku, a web UI for browsing it, plus NiFi.
-# Mongoku: http://localhost:3100 (pre-configured with the replica set). From NiFi, use
-# mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0. The replica set has no authentication.
+# Three member MongoDB replica set (rs0) with authentication, Mongoku (a web UI for browsing it) and NiFi.
+# Log in with admin / admin (admin database). Members authenticate to each other with a demo keyfile, which is
+# not secret. Mongoku: http://localhost:3100 (pre-configured with the replica set). From NiFi, use
+# mongodb://admin:admin@mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0&authSource=admin
+x-mongo-env: &mongo-env
+  MONGO_KEYFILE: ZGVtby1tb25nb2RiLWtleWZpbGUtZG8tbm90LXVzZS1mb3ItcmVhbC1kYXRh
+x-mongo-node: &mongo-node
+  image: mongo:${mongo.version}
+  entrypoint:
+    - bash
+    - -c
+    - |
+      printf '%s' "$$MONGO_KEYFILE" > /data/keyfile
+      chmod 400 /data/keyfile
+      chown mongodb:mongodb /data/keyfile
+      exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --keyFile /data/keyfile
+  healthcheck:
+    test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
+    interval: 5s
+    timeout: 10s
+    retries: 20
 services:
   mongo1:
-    image: mongo:${mongo.version}
+    <<: *mongo-node
     container_name: mongo1
     hostname: mongo1
-    command: mongod --replSet rs0 --bind_ip_all
+    environment:
+      <<: *mongo-env
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
       - 27017:27017
-    healthcheck:
-      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
-      interval: 5s
-      timeout: 10s
-      retries: 20
   mongo2:
-    image: mongo:${mongo.version}
+    <<: *mongo-node
     container_name: mongo2
     hostname: mongo2
-    command: mongod --replSet rs0 --bind_ip_all
-    healthcheck:
-      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
-      interval: 5s
-      timeout: 10s
-      retries: 20
+    environment: *mongo-env
   mongo3:
-    image: mongo:${mongo.version}
+    <<: *mongo-node
     container_name: mongo3
     hostname: mongo3
-    command: mongod --replSet rs0 --bind_ip_all
-    healthcheck:
-      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
-      interval: 5s
-      timeout: 10s
-      retries: 20
+    environment: *mongo-env
   mongo-init:
     image: mongo:${mongo.version}
     container_name: mongo-init
-    restart: "no"
+    restart: on-failure
     depends_on:
       mongo1:
         condition: service_healthy
@@ -49,6 +55,12 @@ services:
       - mongosh
       - --host
       - mongo1
+      - -u
+      - admin
+      - -p
+      - admin
+      - --authenticationDatabase
+      - admin
       - --quiet
       - --eval
       - |
@@ -62,7 +74,7 @@ services:
     container_name: mongoku
     hostname: mongoku
     environment:
-      - MONGOKU_DEFAULT_HOST=mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0
+      - MONGOKU_DEFAULT_HOST=mongodb://admin:admin@mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0&authSource=admin
     ports:
       - 3100:3100
     depends_on:

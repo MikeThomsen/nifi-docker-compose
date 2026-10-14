@@ -6,7 +6,7 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 * docker-compose-nifi-with-cockroachdb.yml - 3 node CockroachDB cluster
 * docker-compose-elasticsearch.yml - ElasticSearch.
 * docker-compose-opensearch.yml - OpenSearch with TLS (demo certificates) and password protection, plus OpenSearch Dashboards. Log in as `admin` / `Demo_Search-4271xZ`; use `https://localhost:9200` with `curl -k`.
-* docker-compose-mongodb.yml - Three member MongoDB replica set with [Mongoku](https://github.com/huggingface/mongoku) at `http://localhost:3100` (pre-connected to the replica set). MongoDB is pinned to 8.2 because 8.0, 8.3 and 9.0 refuse to start on Linux kernels 6.19 and newer.
+* docker-compose-mongodb.yml - Three member MongoDB replica set with authentication (`admin` / `admin`) and [Mongoku](https://github.com/huggingface/mongoku) at `http://localhost:3100` (pre-connected to the replica set). MongoDB is pinned to 8.2 because 8.0, 8.3 and 9.0 refuse to start on Linux kernels 6.19 and newer.
 * docker-compose-postgres.yml - PostgreSQL.
 * docker-compose-sentinel.yml - Redis master, replica and sentinel (master name `mymaster`).
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
