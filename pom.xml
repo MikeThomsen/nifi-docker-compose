@@ -14,6 +14,9 @@
         <opensearch.version>3.9.0</opensearch.version>
         <ignite.version>2.18.0</ignite.version>
         <janusgraph.version>1.1.0</janusgraph.version>
+        <!-- 8.2 is the newest line that starts on Linux kernels 6.19+ (SERVER-121912); 8.0, 8.3 and 9.0 refuse to start there -->
+        <mongo.version>8.2.12</mongo.version>
+        <mongoku.version>2.11.3</mongoku.version>
         <postgres.version>18.6</postgres.version>
         <adminer.version>6.1.1</adminer.version>
         <arangodb.version>3.12.12</arangodb.version>
