@@ -1,0 +1,85 @@
+# Three member MongoDB replica set (rs0) with Mongoku, a web UI for browsing it, plus NiFi.
+# Mongoku: http://localhost:3100 (pre-configured with the replica set). From NiFi, use
+# mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0. The replica set has no authentication.
+services:
+  mongo1:
+    image: mongo:${mongo.version}
+    container_name: mongo1
+    hostname: mongo1
+    command: mongod --replSet rs0 --bind_ip_all
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
+  mongo2:
+    image: mongo:${mongo.version}
+    container_name: mongo2
+    hostname: mongo2
+    command: mongod --replSet rs0 --bind_ip_all
+    healthcheck:
+      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
+  mongo3:
+    image: mongo:${mongo.version}
+    container_name: mongo3
+    hostname: mongo3
+    command: mongod --replSet rs0 --bind_ip_all
+    healthcheck:
+      test: mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
+  mongo-init:
+    image: mongo:${mongo.version}
+    container_name: mongo-init
+    restart: "no"
+    depends_on:
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
+    command:
+      - mongosh
+      - --host
+      - mongo1
+      - --quiet
+      - --eval
+      - |
+        try {
+          rs.status().ok
+        } catch (e) {
+          rs.initiate({_id: "rs0", members: [{_id: 0, host: "mongo1:27017"}, {_id: 1, host: "mongo2:27017"}, {_id: 2, host: "mongo3:27017"}]}).ok
+        }
+  mongoku:
+    image: huggingface/mongoku:${mongoku.version}
+    container_name: mongoku
+    hostname: mongoku
+    environment:
+      - MONGOKU_DEFAULT_HOST=mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0
+    ports:
+      - 3100:3100
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
