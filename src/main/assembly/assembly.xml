@@ -14,5 +14,12 @@
                 <include>**</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/opensearch</directory>
+            <outputDirectory>./opensearch</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

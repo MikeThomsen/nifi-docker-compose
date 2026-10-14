@@ -16,12 +16,12 @@ services:
     image: opensearchproject/opensearch-dashboards:${opensearch.version}
     container_name: opensearch-dashboards
     hostname: dashboards
-    environment:
-      - OPENSEARCH_HOSTS=["https://opensearch:9200"]
     ports:
       - 5601:5601
     depends_on:
       - opensearch
+    volumes:
+      - ./opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
   nifi:
     hostname: nifi
     image: apache/nifi:${nifi.version}

@@ -1,0 +1,21 @@
+# Mounted over the image's default config. The first block is that default config, pointed at the
+# "opensearch" service; the settings below it follow the OpenSearch guidance.
+opensearch.hosts: [https://opensearch:9200]
+opensearch.ssl.verificationMode: none
+opensearch.username: kibanaserver
+opensearch.password: kibanaserver
+opensearch.requestHeadersWhitelist: [authorization, securitytenant]
+opensearch_security.multitenancy.enabled: true
+opensearch_security.multitenancy.tenants.preferred: [Private, Global]
+opensearch_security.readonly_mode.roles: [kibana_read_only]
+opensearch_security.cookie.secure: false
+server.host: '0.0.0.0'
+
+# Set the value to true to enable multiple data source feature
+data_source.enabled: true
+
+# Set the value to true to enable workspace feature
+workspace.enabled: true
+
+# Set the value to true to enable explore feature
+explore.enabled: true
