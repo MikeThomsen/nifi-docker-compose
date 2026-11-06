@@ -14,7 +14,7 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
 * docker-compose-ignite.yml - Apache Ignite support.
 * docker-compose-registry-simple.yml -A simple NiFi Registry example without security enabled.
-* docker-compose-janusgraph.yml - A configuration that connects NiFi with JanusGraph.
+* docker-compose-janusgraph.yml - JanusGraph with BerkeleyDB JE storage and a Lucene index. See [JanusGraph](#janusgraph).
 
 ## Building and Running
 
@@ -41,6 +41,27 @@ KAFKA_UI_AUTH=LOGIN_FORM docker compose -f docker-compose-kafka-native.yml up -d
 ```
 
   Set `KAFKA_UI_USERNAME` and `KAFKA_UI_PASSWORD` to use different credentials.
+
+## JanusGraph
+
+`docker-compose-janusgraph.yml` starts JanusGraph and NiFi. JanusGraph stores data in BerkeleyDB JE with a Lucene index inside its container, so `down -v` removes the graph.
+
+* Gremlin Server: port 8182, traversal source `g`, no login. It takes both WebSocket and HTTP.
+* From inside the compose network, such as NiFi's `TinkerpopClientService`: set Contact Points to `janusgraph` and keep the default port (8182) and path (`/gremlin`).
+* From the host: `curl -XPOST -d '{"gremlin":"g.V().count()"}' http://localhost:8182`
+
+NiFi 2.x does not include the graph components. To use `TinkerpopClientService` and `ExecuteGraphQuery`, download these NARs from Maven Central (group `org.apache.nifi`, same version as NiFi), put them in an `extensions` directory next to the compose file, and then start the stack:
+
+* `nifi-graph-client-service-api-nar`
+* `nifi-other-graph-services-nar`
+* `nifi-graph-nar`
+
+```
+mkdir -p extensions
+for a in nifi-graph-client-service-api-nar nifi-other-graph-services-nar nifi-graph-nar; do
+  curl -fLo extensions/$a-2.12.0.nar https://repo1.maven.org/maven2/org/apache/nifi/$a/2.12.0/$a-2.12.0.nar
+done
+```
 
 ## Neo4j
 

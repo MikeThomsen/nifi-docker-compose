@@ -13,7 +13,7 @@
         <kibana.version>9.5.5</kibana.version>
         <opensearch.version>3.9.0</opensearch.version>
         <ignite.version>2.18.0</ignite.version>
-        <janusgraph.version>1.1.0</janusgraph.version>
+        <janusgraph.version>1.2.0</janusgraph.version>
         <neo4j.version>2026.10.1-community</neo4j.version>
         <!-- 8.2 is the newest line that starts on Linux kernels 6.19+ (SERVER-121912); 8.0, 8.3 and 9.0 refuse to start there -->
         <mongo.version>8.2.12</mongo.version>

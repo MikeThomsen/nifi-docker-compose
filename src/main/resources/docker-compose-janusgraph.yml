@@ -1,10 +1,23 @@
+# JanusGraph (BerkeleyDB JE storage with a Lucene index) and NiFi. The Gremlin Server takes WebSocket and HTTP on
+# port 8182, with traversal source g. From NiFi: host janusgraph, port 8182. From the host:
+# curl -XPOST -d '{"gremlin":"g.V().count()"}' http://localhost:8182
+# NiFi 2.x does not ship the graph NARs. Put nifi-graph-client-service-api-nar, nifi-other-graph-services-nar and
+# nifi-graph-nar (same version as NiFi, from Maven Central) in ./extensions to get TinkerpopClientService and
+# ExecuteGraphQuery.
 services:
   janusgraph:
     container_name: janusgraph
     hostname: janusgraph
     image: janusgraph/janusgraph:${janusgraph.version}
+    environment:
+      - gremlinserver.channelizer=org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
     ports:
       - 8182:8182
+    healthcheck:
+      test: curl -sf -m 5 -XPOST -d '{"gremlin":"1"}' http://localhost:8182
+      interval: 5s
+      timeout: 10s
+      retries: 30
   nifi:
     hostname: nifi
     image: apache/nifi:${nifi.version}
@@ -15,7 +28,8 @@ services:
       - SINGLE_USER_CREDENTIALS_USERNAME=root
       - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
     depends_on:
-      - janusgraph
+      janusgraph:
+        condition: service_healthy
     volumes:
       - /tmp/nifi:/opt/nifi_in
       - ./extensions:/opt/nifi/nifi-current/nar_extensions
