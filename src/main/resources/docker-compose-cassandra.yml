@@ -1,0 +1,41 @@
+# Single node Apache Cassandra with password authentication, and NiFi. Log in as cassandra / cassandra.
+# CQL from the host: localhost:9042; from NiFi: cassandra:9042, datacenter datacenter1.
+# For NiFi, put the nifi-cql-bundle NARs (io.github.mikethomsen) in ./extensions; see the README.
+services:
+  cassandra:
+    image: cassandra:${cassandra.version}
+    container_name: cassandra
+    hostname: cassandra
+    entrypoint:
+      - bash
+      - -c
+      - |
+        sed -i -e 's/^authenticator: .*/authenticator: PasswordAuthenticator/' \
+               -e 's/^authorizer: .*/authorizer: CassandraAuthorizer/' /etc/cassandra/cassandra.yaml
+        exec docker-entrypoint.sh cassandra -f
+    environment:
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=200M
+    ports:
+      - 9042:9042
+    healthcheck:
+      test: cqlsh -u cassandra -p cassandra -e "SELECT release_version FROM system.local"
+      interval: 10s
+      timeout: 20s
+      retries: 30
+      start_period: 30s
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions

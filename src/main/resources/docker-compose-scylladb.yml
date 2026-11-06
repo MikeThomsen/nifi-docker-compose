@@ -1,0 +1,53 @@
+# Single node ScyllaDB with password authentication, and NiFi. Log in as cassandra / cassandra.
+# CQL from the host: localhost:9042; from NiFi: scylladb:9042, datacenter datacenter1.
+# Runs in developer mode on one CPU and 1 GB of memory, which is fine for local testing.
+# For NiFi, put the nifi-cql-bundle NARs (io.github.mikethomsen) in ./extensions; see the README.
+services:
+  scylladb:
+    image: scylladb/scylla:${scylladb.version}
+    container_name: scylladb
+    hostname: scylladb
+    # ScyllaDB no longer creates a default superuser, so cassandra / cassandra is set in scylla.yaml. The hash is
+    # `openssl passwd -6 -salt nifidemo cassandra`, with each $ doubled for Docker Compose. It goes in the file
+    # rather than on the command line because the image's entrypoint passes arguments through a shell, which would
+    # expand the $ fields.
+    entrypoint:
+      - bash
+      - -c
+      - |
+        grep -q '^auth_superuser_name:' /etc/scylla/scylla.yaml || cat >> /etc/scylla/scylla.yaml <<'EOF'
+        auth_superuser_name: cassandra
+        auth_superuser_salted_password: "$$6$$nifidemo$$4qXJgizfowjWwpDCZLryyfXkjodin1yp60/gRnZiHnSAtei1N7U0vPFGS3Bghuu4I/G.iOwP7ND0U7K9Oy56p."
+        EOF
+        exec /docker-entrypoint.py "$$@"
+      - scylla
+    command:
+      - --authenticator=PasswordAuthenticator
+      - --authorizer=CassandraAuthorizer
+      - --developer-mode=1
+      - --overprovisioned=1
+      - --smp=1
+      - --memory=1G
+    ports:
+      - 9042:9042
+    healthcheck:
+      test: cqlsh -u cassandra -p cassandra -e "SELECT release_version FROM system.local"
+      interval: 10s
+      timeout: 20s
+      retries: 30
+      start_period: 20s
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      scylladb:
+        condition: service_healthy
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
