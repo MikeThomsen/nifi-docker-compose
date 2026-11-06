@@ -4,12 +4,15 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 
 * docker-compose-arangodb.yml - ArangoDB.
 * docker-compose-nifi-with-cockroachdb.yml - 3 node CockroachDB cluster
+* docker-compose-cassandra.yml - Single node Apache Cassandra. See [Cassandra and ScyllaDB](#cassandra-and-scylladb).
+* docker-compose-cassandra-cluster.yml - Three node Apache Cassandra cluster. See [Cassandra and ScyllaDB](#cassandra-and-scylladb).
 * docker-compose-elasticsearch.yml - ElasticSearch.
 * docker-compose-opensearch.yml - OpenSearch with TLS (demo certificates) and password protection, plus OpenSearch Dashboards. Log in as `admin` / `Demo_Search-4271xZ`; use `https://localhost:9200` with `curl -k`.
 * docker-compose-kafka-native.yml - Three node Kafka cluster (KRaft, `apache/kafka-native`) with [Kafka UI](https://github.com/kafbat/kafka-ui). See [Kafka and Kafka UI](#kafka-and-kafka-ui).
 * docker-compose-mongodb.yml - Three member MongoDB replica set with authentication and [Mongoku](https://github.com/huggingface/mongoku). See [MongoDB and Mongoku](#mongodb-and-mongoku).
 * docker-compose-neo4j.yml - Neo4j Community Edition. See [Neo4j](#neo4j).
 * docker-compose-postgres.yml - PostgreSQL.
+* docker-compose-scylladb.yml - Single node ScyllaDB. See [Cassandra and ScyllaDB](#cassandra-and-scylladb).
 * docker-compose-sentinel.yml - Redis master, replica and sentinel (master name `mymaster`).
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
 * docker-compose-ignite.yml - Apache Ignite support.
@@ -26,6 +29,35 @@ docker compose -f docker-compose-mongodb.yml down -v
 ```
 
 Several files publish the same ports (8443 for NiFi and its container name `nifi`), so run one at a time.
+
+## Cassandra and ScyllaDB
+
+These files work with [nifi-cql-bundle](https://github.com/MikeThomsen/nifi-cql-bundle). Each one has password authentication turned on, with the username `cassandra` and password `cassandra`, and uses datacenter `datacenter1`.
+
+| File | Contact Points from NiFi | From the host |
+|------|--------------------------|---------------|
+| `docker-compose-cassandra.yml` | `cassandra:9042` | `localhost:9042` |
+| `docker-compose-cassandra-cluster.yml` | `cassandra1:9042,cassandra2:9042,cassandra3:9042` | `localhost:9042` (cassandra1 only) |
+| `docker-compose-scylladb.yml` | `scylladb:9042` | `localhost:9042` |
+
+* The cluster takes about four minutes to start, because Cassandra nodes have to join one at a time. When the third node is up, `cassandra-init` raises `system_auth` to replication factor 3 so logins keep working with a node down. NiFi starts after that.
+* ScyllaDB runs in developer mode with one CPU and 1 GB of memory. Recent ScyllaDB versions no longer create a default superuser, so the compose file sets `cassandra` / `cassandra` in `scylla.yaml`.
+* Use `CassandraCQLExecutionService` for Cassandra and `ScyllaDBCQLExecutionService` for ScyllaDB.
+* Create keyspaces and tables with `cqlsh`, for example `docker exec -it cassandra cqlsh -u cassandra -p cassandra`. `ExecuteCQL` runs only SELECT, INSERT, UPDATE and DELETE.
+
+NiFi needs the bundle's NARs (group `io.github.mikethomsen`, version 1.0.1, built for NiFi 2.12.0) in an `extensions` directory next to the compose file:
+
+* `nifi-cql-services-api-nar` and `nifi-cql-nar` (always)
+* `nifi-cassandra-session-provider-service-nar` for Cassandra, `nifi-scylladb-session-provider-service-nar` for ScyllaDB
+* `nifi-cql-distributedmapcache-service-nar` (optional) for `CQLDistributedMapCache`
+
+```
+mkdir -p extensions
+for a in nifi-cql-services-api-nar nifi-cql-nar nifi-cassandra-session-provider-service-nar \
+         nifi-scylladb-session-provider-service-nar nifi-cql-distributedmapcache-service-nar; do
+  curl -fLo extensions/$a-1.0.1.nar https://repo1.maven.org/maven2/io/github/mikethomsen/$a/1.0.1/$a-1.0.1.nar
+done
+```
 
 ## Kafka and Kafka UI
 

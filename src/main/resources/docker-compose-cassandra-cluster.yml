@@ -1,0 +1,80 @@
+# Three node Apache Cassandra cluster with password authentication, and NiFi. Log in as cassandra / cassandra.
+# Nodes join one at a time, which Cassandra requires, so startup takes about four minutes. cassandra-init then
+# raises system_auth to replication factor 3 so logins keep working if a node is down.
+# CQL from the host (only cassandra1 is published): localhost:9042
+# From NiFi: cassandra1:9042,cassandra2:9042,cassandra3:9042, datacenter datacenter1.
+# For NiFi, put the nifi-cql-bundle NARs (io.github.mikethomsen) in ./extensions; see the README.
+x-cassandra-node: &cassandra-node
+  image: cassandra:${cassandra.version}
+  entrypoint:
+    - bash
+    - -c
+    - |
+      sed -i -e 's/^authenticator: .*/authenticator: PasswordAuthenticator/' \
+             -e 's/^authorizer: .*/authorizer: CassandraAuthorizer/' /etc/cassandra/cassandra.yaml
+      exec docker-entrypoint.sh cassandra -f
+  environment:
+    - CASSANDRA_CLUSTER_NAME=nifi-cassandra
+    - CASSANDRA_SEEDS=cassandra1
+    - MAX_HEAP_SIZE=1G
+    - HEAP_NEWSIZE=200M
+  healthcheck:
+    test: cqlsh -u cassandra -p cassandra -e "SELECT release_version FROM system.local"
+    interval: 10s
+    timeout: 20s
+    retries: 30
+    start_period: 30s
+services:
+  cassandra1:
+    <<: *cassandra-node
+    container_name: cassandra1
+    hostname: cassandra1
+    ports:
+      - 9042:9042
+  cassandra2:
+    <<: *cassandra-node
+    container_name: cassandra2
+    hostname: cassandra2
+    depends_on:
+      cassandra1:
+        condition: service_healthy
+  cassandra3:
+    <<: *cassandra-node
+    container_name: cassandra3
+    hostname: cassandra3
+    depends_on:
+      cassandra2:
+        condition: service_healthy
+  cassandra-init:
+    image: cassandra:${cassandra.version}
+    container_name: cassandra-init
+    restart: on-failure
+    depends_on:
+      cassandra3:
+        condition: service_healthy
+    entrypoint:
+      - cqlsh
+      - cassandra1
+      - -u
+      - cassandra
+      - -p
+      - cassandra
+      - -e
+      # Rewriting the role copies it to the two new replicas, which would otherwise need a repair.
+      - "ALTER KEYSPACE system_auth WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': 3};
+        ALTER ROLE cassandra WITH PASSWORD = 'cassandra';"
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      cassandra-init:
+        condition: service_completed_successfully
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
