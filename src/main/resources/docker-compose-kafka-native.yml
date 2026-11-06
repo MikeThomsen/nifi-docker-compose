@@ -1,0 +1,99 @@
+# Three node Apache Kafka cluster (GraalVM native image, KRaft; each node is both broker and controller), Kafka UI
+# and NiFi. The native image is experimental upstream and meant for development and testing only.
+# From NiFi, use bootstrap servers kafka1:29092,kafka2:29092,kafka3:29092
+# From the host, use localhost:9092,localhost:9093,localhost:9094
+# Kafka UI: http://localhost:8080. Login is off by default; start with KAFKA_UI_AUTH=LOGIN_FORM to require
+# admin / admin (override with KAFKA_UI_USERNAME and KAFKA_UI_PASSWORD).
+x-kafka-env: &kafka-env
+  CLUSTER_ID: 5L6g3nShT-eMCtK--X86sw
+  KAFKA_PROCESS_ROLES: broker,controller
+  KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:29093,2@kafka2:29093,3@kafka3:29093
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+  KAFKA_MIN_INSYNC_REPLICAS: 2
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+x-kafka-node: &kafka-node
+  image: apache/kafka-native:${kafka.version}
+  healthcheck:
+    test: nc -z localhost 29092
+    interval: 5s
+    timeout: 5s
+    retries: 20
+services:
+  kafka1:
+    <<: *kafka-node
+    container_name: kafka1
+    hostname: kafka1
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: INTERNAL://:29092,CONTROLLER://:29093,EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://localhost:9092
+    ports:
+      - 9092:9092
+  kafka2:
+    <<: *kafka-node
+    container_name: kafka2
+    hostname: kafka2
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: INTERNAL://:29092,CONTROLLER://:29093,EXTERNAL://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:29092,EXTERNAL://localhost:9093
+    ports:
+      - 9093:9093
+  kafka3:
+    <<: *kafka-node
+    container_name: kafka3
+    hostname: kafka3
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: INTERNAL://:29092,CONTROLLER://:29093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:29092,EXTERNAL://localhost:9094
+    ports:
+      - 9094:9094
+  kafka-ui:
+    image: kafbat/kafka-ui:${kafka-ui.version}
+    container_name: kafka-ui
+    hostname: kafka-ui
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29092,kafka3:29092
+      DYNAMIC_CONFIG_ENABLED: "true"
+      AUTH_TYPE: ${KAFKA_UI_AUTH:-DISABLED}
+      SPRING_SECURITY_USER_NAME: ${KAFKA_UI_USERNAME:-admin}
+      SPRING_SECURITY_USER_PASSWORD: ${KAFKA_UI_PASSWORD:-admin}
+    ports:
+      - 8080:8080
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
