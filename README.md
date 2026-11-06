@@ -6,6 +6,7 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 * docker-compose-nifi-with-cockroachdb.yml - 3 node CockroachDB cluster
 * docker-compose-elasticsearch.yml - ElasticSearch.
 * docker-compose-opensearch.yml - OpenSearch with TLS (demo certificates) and password protection, plus OpenSearch Dashboards. Log in as `admin` / `Demo_Search-4271xZ`; use `https://localhost:9200` with `curl -k`.
+* docker-compose-kafka-native.yml - Three node Kafka cluster (KRaft, `apache/kafka-native`) with [Kafka UI](https://github.com/kafbat/kafka-ui). See [Kafka and Kafka UI](#kafka-and-kafka-ui).
 * docker-compose-mongodb.yml - Three member MongoDB replica set with authentication and [Mongoku](https://github.com/huggingface/mongoku). See [MongoDB and Mongoku](#mongodb-and-mongoku).
 * docker-compose-postgres.yml - PostgreSQL.
 * docker-compose-sentinel.yml - Redis master, replica and sentinel (master name `mymaster`).
@@ -24,6 +25,21 @@ docker compose -f docker-compose-mongodb.yml down -v
 ```
 
 Several files publish the same ports (8443 for NiFi and its container name `nifi`), so run one at a time.
+
+## Kafka and Kafka UI
+
+`docker-compose-kafka-native.yml` starts three Kafka nodes (each is both broker and controller), Kafka UI and NiFi. It uses the GraalVM native Kafka image, which starts faster and uses less memory but is experimental upstream and meant for development and testing only. For the regular JVM image, change the image to `apache/kafka:${kafka.version}`; nothing else needs to change.
+
+* Bootstrap servers from inside the compose network, such as a NiFi processor: `kafka1:29092,kafka2:29092,kafka3:29092`
+* Bootstrap servers from the host: `localhost:9092,localhost:9093,localhost:9094`
+* Internal topics and new topics default to replication factor 3, with `min.insync.replicas=2`.
+* Kafka UI: `http://localhost:8080`. Login is off by default. To require the username `admin` and password `admin`:
+
+```
+KAFKA_UI_AUTH=LOGIN_FORM docker compose -f docker-compose-kafka-native.yml up -d
+```
+
+  Set `KAFKA_UI_USERNAME` and `KAFKA_UI_PASSWORD` to use different credentials.
 
 ## MongoDB and Mongoku
 
