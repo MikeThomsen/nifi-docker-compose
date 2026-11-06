@@ -8,6 +8,7 @@ All of these run Apache NiFi 2.12.0. NiFi 2.x only serves HTTPS, so log in at `h
 * docker-compose-opensearch.yml - OpenSearch with TLS (demo certificates) and password protection, plus OpenSearch Dashboards. Log in as `admin` / `Demo_Search-4271xZ`; use `https://localhost:9200` with `curl -k`.
 * docker-compose-kafka-native.yml - Three node Kafka cluster (KRaft, `apache/kafka-native`) with [Kafka UI](https://github.com/kafbat/kafka-ui). See [Kafka and Kafka UI](#kafka-and-kafka-ui).
 * docker-compose-mongodb.yml - Three member MongoDB replica set with authentication and [Mongoku](https://github.com/huggingface/mongoku). See [MongoDB and Mongoku](#mongodb-and-mongoku).
+* docker-compose-neo4j.yml - Neo4j Community Edition. See [Neo4j](#neo4j).
 * docker-compose-postgres.yml - PostgreSQL.
 * docker-compose-sentinel.yml - Redis master, replica and sentinel (master name `mymaster`).
 * docker-compose-solrcloud.yml - Two node SolrCloud cluster w/ ZooKeeper.
@@ -40,6 +41,30 @@ KAFKA_UI_AUTH=LOGIN_FORM docker compose -f docker-compose-kafka-native.yml up -d
 ```
 
   Set `KAFKA_UI_USERNAME` and `KAFKA_UI_PASSWORD` to use different credentials.
+
+## Neo4j
+
+`docker-compose-neo4j.yml` starts Neo4j Community Edition and NiFi.
+
+* Neo4j user: `neo4j` / `neo4jneo4j`
+* Neo4j Browser: `http://localhost:7474`
+* Bolt URL from inside the compose network, such as NiFi's `Neo4JCypherClientService`: `bolt://neo4j:7687`
+* Bolt URL from the host: `bolt://localhost:7687`
+
+NiFi 2.x does not include the graph components. To use `Neo4JCypherClientService` and `ExecuteGraphQuery`, download these NARs from Maven Central (group `org.apache.nifi`, same version as NiFi), put them in an `extensions` directory next to the compose file, and then start the stack:
+
+* `nifi-graph-client-service-api-nar`
+* `nifi-neo4j-cypher-service-nar`
+* `nifi-graph-nar`
+
+```
+mkdir -p extensions
+for a in nifi-graph-client-service-api-nar nifi-neo4j-cypher-service-nar nifi-graph-nar; do
+  curl -fLo extensions/$a-2.12.0.nar https://repo1.maven.org/maven2/org/apache/nifi/$a/2.12.0/$a-2.12.0.nar
+done
+```
+
+Neo4j clustering is an Enterprise Edition feature, so this file runs a single instance.
 
 ## MongoDB and Mongoku
 

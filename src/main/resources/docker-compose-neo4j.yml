@@ -1,0 +1,35 @@
+# Neo4j (Community Edition) and NiFi. Log in as neo4j / neo4jneo4j.
+# Neo4j Browser: http://localhost:7474. Bolt from the host: bolt://localhost:7687; from NiFi: bolt://neo4j:7687
+# NiFi 2.x does not ship the graph NARs. Put nifi-graph-client-service-api-nar, nifi-neo4j-cypher-service-nar and
+# nifi-graph-nar (same version as NiFi, from Maven Central) in ./extensions to get Neo4JCypherClientService and
+# ExecuteGraphQuery.
+services:
+  neo4j:
+    image: neo4j:${neo4j.version}
+    container_name: neo4j
+    hostname: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/neo4jneo4j
+    ports:
+      - 7474:7474
+      - 7687:7687
+    healthcheck:
+      test: cypher-shell -u neo4j -p neo4jneo4j "RETURN 1"
+      interval: 5s
+      timeout: 10s
+      retries: 30
+  nifi:
+    hostname: nifi
+    image: apache/nifi:${nifi.version}
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=root
+      - SINGLE_USER_CREDENTIALS_PASSWORD=rootrootroot
+    ports:
+      - 8443:8443
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    volumes:
+      - /tmp/nifi:/opt/nifi_in
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
